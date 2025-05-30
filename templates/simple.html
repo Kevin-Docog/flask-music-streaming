@@ -1,20 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Simple Music Player</title>
+    <title>{{ title }}</title>
 </head>
 <body>
     <h1>Simple Music Player</h1>
 
     <h3>Add New Song</h3>
-    <form action="/api/music" method="post" enctype="multipart/form-data">
-        <input type="hidden" name="redirect_to" value="simple" />
-        <input type="text" name="name" placeholder="Song Name" required />
-        <input type="text" name="genre" placeholder="Genre" />
-        <input type="number" name="rating" placeholder="Rating" min="1" max="5" required />
-        <input type="file" name="file" accept=".mp3" required />
-        <button type="submit">Add Song</button>
+    <form method="post" action="/api/music" enctype="multipart/form-data">
+        <input type="text" name="name" placeholder="Song name" required>
+        <input type="text" name="genre" placeholder="Genre (optional)">
+        <input type="number" name="rating" placeholder="Rating" min="1" max="5" required>
+        <input type="file" name="file" accept=".mp3" required>
+        <input type="hidden" name="redirect_to" value="simple">
+        <button type="submit">Upload Music</button>
     </form>
+
 
     <hr />
 
@@ -52,7 +53,14 @@ function updateMusic(form) {
     fetch(form.action, {
         method: "PUT",
         body: data
-    }).then(() => location.reload());
+    })
+    .then(response => {
+        if (!response.ok) {
+            alert("Update failed.");
+        } else {
+            location.reload();
+        }
+    });
 }
 
 function deleteMusic(form) {
@@ -60,8 +68,16 @@ function deleteMusic(form) {
     fetch(form.action, {
         method: "DELETE",
         body: data
-    }).then(() => location.reload());
+    })
+    .then(response => {
+        if (!response.ok) {
+            alert("Delete failed.");
+        } else {
+            location.reload();
+        }
+    });
 }
 </script>
+
 </body>
 </html>
