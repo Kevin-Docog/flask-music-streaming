@@ -1,2 +1,4 @@
 Flask==0.12.2
 tornado==5.0.2
+flasgger
+werkzeug
