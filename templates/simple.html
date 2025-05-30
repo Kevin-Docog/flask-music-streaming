@@ -1,38 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Document</title>
+    <title>Simple Music Player</title>
 </head>
 <body>
+    <h1>Simple Music Player</h1>
+
+    <h3>Add New Song</h3>
+    <form action="/api/music" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="redirect_to" value="simple" />
+        <input type="text" name="name" placeholder="Song Name" required />
+        <input type="text" name="genre" placeholder="Genre" />
+        <input type="number" name="rating" placeholder="Rating" min="1" max="5" required />
+        <input type="file" name="file" accept=".mp3" required />
+        <button type="submit">Add Song</button>
+    </form>
+
+    <hr />
+
+    {% for entry in entries %}
     <div>
-        {% for entry in entries %}
-        <div>
-            <h2>{{ entry.name }}</h2>
-            <div>
-                <div>
-                    <div>Genre:
-                        <b>{{ entry.genre }}</b>
-                    </div>
-                </div>
-                <div>
-                    <div>Rating:
-                        <b>{{ entry.rating }}</b>
-                    </div>
-                </div>
-                <div>
-                    <div>
-                        <audio controls>
-                            <source src="http://localhost:5000/{{ entry.id }}" type="audio/mp3">
-                        </audio>
-                    </div>
-                </div>
-            </div>
-    
-        </div>
-        {% else %}
-        <li>
-            <em>Unbelievable. No entries so far</em>
-            {% endfor %}
+        <h2>{{ entry.name }}</h2>
+        <div>Genre: <b>{{ entry.genre }}</b></div>
+        <div>Rating: <b>{{ entry.rating }}</b></div>
+        <audio controls>
+            <source src="{{ url_for('streammp3', stream_id=entry.id) }}" type="audio/mp3">
+        </audio>
+
+        <form action="/api/music/{{ entry.id }}" method="post" enctype="application/x-www-form-urlencoded" style="margin-top:10px;" onsubmit="event.preventDefault(); updateMusic(this);">
+            <input type="hidden" name="_method" value="put" />
+            <input type="hidden" name="redirect_to" value="simple" />
+            <input type="text" name="name" value="{{ entry.name }}" required />
+            <input type="text" name="genre" value="{{ entry.genre }}" />
+            <input type="number" name="rating" value="{{ entry.rating }}" min="1" max="5" required />
+            <button type="submit">Update</button>
+        </form>
+
+        <form action="/api/music/{{ entry.id }}" method="post" style="margin-top:10px;" onsubmit="event.preventDefault(); deleteMusic(this);">
+            <input type="hidden" name="redirect_to" value="simple" />
+            <button type="submit" onclick="return confirm('Delete this song?');">Delete</button>
+        </form>
     </div>
+    <hr />
+    {% else %}
+    <p>No music entries found.</p>
+    {% endfor %}
+
+<script>
+function updateMusic(form) {
+    const data = new FormData(form);
+    fetch(form.action, {
+        method: "PUT",
+        body: data
+    }).then(() => location.reload());
+}
+
+function deleteMusic(form) {
+    const data = new FormData(form);
+    fetch(form.action, {
+        method: "DELETE",
+        body: data
+    }).then(() => location.reload());
+}
+</script>
 </body>
 </html>

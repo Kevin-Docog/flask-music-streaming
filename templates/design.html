@@ -1,61 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
-    <meta name="description" content="Simple interface to make some music using a raspberry pi">
-    <meta name="author" content="Robert Filter">
-    <link rel="icon" href="">
     <title>{{ title }}</title>
-    <!-- Bootstrap core CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
 </head>
-
 <body>
-    <div class="container-fluid">
-        <div class="jumbotron">
-            <h1>Playlist</h1>
-        </div>
+<div class="container">
+    <h1>Playlist</h1>
 
-        <div id="sl">
-            {% for entry in entries %}
-            <div class="well">
-                <h2>{{ entry.name }}</h2>
-                <div class="row">
-                    <div class="col-md-3">
-                        <div></div>
-                    </div>
-                    <div class="col-md-3">
-                        <div>Genre:
-                            <b>{{ entry.genre }}</b>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div>Rating:
-                            <b>{{ entry.rating }}</b>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="pull-right">
-                            <audio controls>
-                                <source src="http://localhost:5000/{{ entry.id }}" type="audio/mp3">
-                            </audio>
-                        </div>
-                    </div>
-                </div>
+    <h3>Add New Song</h3>
+    <form action="/api/music" method="post" enctype="multipart/form-data" class="form-inline">
+        <input type="hidden" name="redirect_to" value="design" />
+        <input type="text" name="name" placeholder="Song Name" class="form-control" required />
+        <input type="text" name="genre" placeholder="Genre" class="form-control" />
+        <input type="number" name="rating" placeholder="Rating" min="1" max="5" class="form-control" required />
+        <input type="file" name="file" accept=".mp3" class="form-control" required />
+        <button type="submit" class="btn btn-primary">Add Song</button>
+    </form>
 
-            </div>
-            {% else %}
-            <li>
-                <em>Unbelievable. No entries so far</em>
-                {% endfor %}
-        </div>
+    <hr />
+
+    {% for entry in entries %}
+    <div class="well">
+        <h3>{{ entry.name }}</h3>
+        <p>Genre: <b>{{ entry.genre }}</b></p>
+        <p>Rating: <b>{{ entry.rating }}</b></p>
+        <audio controls>
+            <source src="{{ url_for('streammp3', stream_id=entry.id) }}" type="audio/mp3">
+        </audio>
+
+        <form action="/api/music/{{ entry.id }}" method="post" enctype="application/x-www-form-urlencoded" class="form-inline" style="margin-top:10px;" onsubmit="event.preventDefault(); updateMusic(this);">
+            <input type="hidden" name="redirect_to" value="design" />
+            <input type="text" name="name" value="{{ entry.name }}" class="form-control" required />
+            <input type="text" name="genre" value="{{ entry.genre }}" class="form-control" />
+            <input type="number" name="rating" value="{{ entry.rating }}" min="1" max="5" class="form-control" required />
+            <button type="submit" class="btn btn-success">Update</button>
+        </form>
+
+        <form action="/api/music/{{ entry.id }}" method="post" style="margin-top:10px;" onsubmit="event.preventDefault(); deleteMusic(this);">
+            <input type="hidden" name="redirect_to" value="design" />
+            <button type="submit" class="btn btn-danger" onclick="return confirm('Delete this song?');">Delete</button>
+        </form>
     </div>
+    {% else %}
+    <p>No music entries found.</p>
+    {% endfor %}
+</div>
 
-    </div>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script>
+function updateMusic(form) {
+    const data = new FormData(form);
+    fetch(form.action, {
+        method: "PUT",
+        body: data
+    }).then(() => location.reload());
+}
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+function deleteMusic(form) {
+    const data = new FormData(form);
+    fetch(form.action, {
+        method: "DELETE",
+        body: data
+    }).then(() => location.reload());
+}
+</script>
 </body>
-
 </html>
