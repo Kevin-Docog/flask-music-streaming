@@ -123,7 +123,6 @@ def api_add_music():
     file = request.files.get('file')
     redirect_to = request.form.get('redirect_to', 'simple')
 
-    # Validate required fields
     if not name or not rating or not file:
         return jsonify({'error': 'Missing required fields'}), 400
 
@@ -144,7 +143,6 @@ def api_add_music():
     music_db.append(music)
     save_music_db()
 
-    # Validate redirect_to - only allow 'simple' or 'design' for safety
     if redirect_to not in ['simple', 'design']:
         redirect_to = 'simple'
 
