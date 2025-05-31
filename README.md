@@ -1,6 +1,6 @@
-# 🎵 Enhanced Flask Music Player
+# 🎵 Enhanced Flask Music Streaming
 
-This project is a fully enhanced music player built using **Flask** and served with **Tornado**. It supports uploading, playing, updating, and deleting `.mp3` music files through both a **web UI** and a **RESTful API** with **Swagger documentation**.
+This project is a fully enhanced music streaming built using **Flask** and served with **Tornado**. It supports uploading, playing, updating, and deleting `.mp3` music files through both a **web UI** and a **RESTful API** with **Swagger documentation**.
 
 ---
 
@@ -30,8 +30,8 @@ This project is a fully enhanced music player built using **Flask** and served w
 ├── static/
 │   └── music/             # Uploaded `.mp3` files
 ├── templates/
-│   ├── simple.html        # Minimal player UI
-│   └── design.html        # Bootstrap-based player UI
+│   ├── simple.html        # Minimal Streaming UI
+│   └── design.html        # Bootstrap-based Streaming UI
 ```
 
 ---
