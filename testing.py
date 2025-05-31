@@ -30,7 +30,7 @@ def test_add_music_success(client):
     }
     file = (create_dummy_mp3(), 'test.mp3')
     response = client.post('/api/music', data={**data, 'file': file}, content_type='multipart/form-data')
-    assert response.status_code == 302  # It redirects to /simple
+    assert response.status_code == 302
     assert len(music_db) == 1
     assert music_db[0]['name'] == 'Test Song'
 
