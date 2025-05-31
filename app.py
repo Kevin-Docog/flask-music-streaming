@@ -42,11 +42,11 @@ def log_response_status(response):
 
 @app.route('/')
 def simple():
-    return render_template('simple.html', entries=music_db, title='Simple Music Player')
+    return render_template('simple.html', entries=music_db, title='Simple Music Stream')
 
 @app.route('/design')
 def design():
-    return render_template('design.html', entries=music_db, title='Design Music Player')
+    return render_template('design.html', entries=music_db, title='Design Music Stream')
 
 @app.route('/<int:stream_id>')
 def streammp3(stream_id):
